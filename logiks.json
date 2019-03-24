@@ -1,0 +1,25 @@
+{
+	"name": "Logiks Packages",
+	"version": "1.0.0",
+	"status": "alpha",
+	"type": "module",
+	"package": "packages",
+	"description": "Package Management System for Logiks",
+	"keywords": "logiks,modules,packages,modules,plugins",
+	"license": "MIT",
+	"marketid": "",
+	"homepage": "https://github.com/LogiksPlugins/packages",
+	"bugs": "https://github.com/LogiksPlugins/packages/issues",
+	"dependencies": {
+		"core": "+4.0.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/LogiksPlugins/packages.git"
+	},
+	"authors": [{
+		"name": "OpenLogiks Team",
+		"email": "admin@openlogiks.org",
+		"authorid": "olgksadmin"
+	}]
+}
