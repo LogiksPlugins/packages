@@ -104,12 +104,13 @@ if(!function_exists("deleteFolder")) {
    */
   function copyFolder($source, $dest, $overwrite = false,$basePath = ""){
       if(!is_dir($basePath . $dest)) //Lets just make sure our new folder is already created. Alright so its not efficient to check each time... bite me
-        mkdir($basePath . $dest);
+      mkdir($basePath . $dest);
       if($handle = opendir($basePath . $source)){        // if the folder exploration is sucsessful, continue
           while(false !== ($file = readdir($handle))){ // as long as storing the next file to $file is successful, continue
               if($file != '.' && $file != '..'){
                   $path = $source . '/' . $file;
                   if(is_file($basePath . $path)){
+                      //println($basePath . $path . "==>" . $basePath . $dest . '/' . $file);
                       if(!is_file($basePath . $dest . '/' . $file) || $overwrite)
                       if(!@copy($basePath . $path, $basePath . $dest . '/' . $file)){
                           echo '<font color="red">File ('.$path.') could not be copied, likely a permissions problem.</font>';

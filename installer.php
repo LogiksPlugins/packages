@@ -16,15 +16,23 @@ if(!function_exists("configure_package")) {
     $appID = SITENAME;
     if(defined("CMS_APPROOT")) {
       $basePath = CMS_APPROOT;
+    } else {
+      $basePath = APPROOT;
     }
     if(defined("CMS_SITENAME")) {
       $appID = CMS_SITENAME;
+    } else {
+      $appID = SITENAME;
     }
+    
     if(file_exists($packagePath."logiks.json")) {
       $pluginInfo = json_decode(file_get_contents($packagePath."logiks.json"),true);
     }
     
     //feature config
+    if(!file_exists($basePath."config/features/") || !is_dir($basePath."config/features/")) {
+      mkdir($basePath."config/features/", 0777, true);
+    }
     if(is_file($packagePath."feature.cfg")) {
       copy($packagePath."feature.cfg",$basePath."config/features/{$packageID}.cfg");
     }
@@ -34,17 +42,17 @@ if(!function_exists("configure_package")) {
     
     //.install folder
     if(is_dir($packagePath.".install/")) {
-      installDotFolder($packagePath.".install/");
-    }
-    
-    //SQL Folder
-    if(is_dir($packagePath."sql/")) {
-      installSQLFolder($packagePath."sql/");
+      installDotFolder($packagePath.".install/", $basePath, $overwrite);
     }
     
     //SQL Schema
     if(is_file($packagePath."schema.json")) {
-      installSchema($packagePath."schema.json");
+      installSQL($packagePath."schema.json");
+    }
+
+    //SQL Folder
+    if(is_dir($packagePath."sql/")) {
+      installSQLFolder($packagePath."sql/");
     }
     
     //Generate Permissions
@@ -65,7 +73,17 @@ if(!function_exists("configure_package")) {
     } 
   }
   
-  function installSchema($schemaFile) {
+  function installSQL($sqlFile) {
+    if(file_exists($sqlFile)) {
+      $sqlQuery = file_get_contents($sqlFile);
+      $sqlQuery = explode(";\n",$sqlQuery);
+
+      foreach($sqlQuery as $sql) {
+        $sql = trim($sql);
+        if(strlen($sql)<=1) continue;
+        $a = _db()->_RAW($sql)->_RUN();
+      }
+    }
   }
   
   function installSQLFolder($packagePath) {
@@ -114,7 +132,7 @@ if(!function_exists("configure_package")) {
     }
   }
   
-  function installDotFolder($dotDir) {
+  function installDotFolder($dotDir, $basePath, $overwrite=true) {
     $tempFS = scandir($dotDir);
     $tempFS = array_splice($tempFS,2);
     foreach($tempFS as $f) {
